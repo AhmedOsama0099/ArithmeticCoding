@@ -1,5 +1,5 @@
 package com.arithmeticcoding;
-
+//class
 public class charAndProb {
     char symbol;
     double prob;
