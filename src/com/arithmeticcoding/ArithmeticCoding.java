@@ -15,26 +15,43 @@ public class ArithmeticCoding {
         seq=seqq;
         setTable(seq);
         compress(seq);
-
-       /* for(char x:table.keySet()){
-            System.out.print(x+"->"+table.get(x).low+" "+table.get(x).upper+" ");
-        }*/
         return String.valueOf(lastval);
-        /*System.out.println();
-        while(true){
-            String x=sc.next();
-            if(x.equals("^z"))
-                break;
-            double low=sc.nextDouble();
-            double high=sc.nextDouble();
-            table.put(x.charAt(0),new LowUpperBoundry(low,high));
-        }
-        double value=sc.nextDouble();
-        int numChars=sc.nextInt();
-        deCompress(value,numChars);*/
-
     }
-
+    public static String compressForFile(String seqq) {
+        //seq=sc.nextLine();
+        seq=seqq;
+        setTable(seq);
+        compress(seq);
+        return String.valueOf(lastval)+","+String.valueOf(seq.length());
+    }
+    public static void setTableDecompress(ArrayList<charAndProb>prob){
+        //double cont2 = 0.0;
+        table.clear();
+        double cont=0.0;
+        for(int i=0;i<prob.size();i++){
+            table.put(prob.get(i).symbol,new LowUpperBoundry(cont,BigDecimal.valueOf(cont+prob.get(i).prob)/**set precision*/
+                    .setScale(3, RoundingMode.HALF_UP)
+                    .doubleValue()));
+            cont=BigDecimal.valueOf(cont+prob.get(i).prob)/**set precision*/
+                    .setScale(3, RoundingMode.HALF_UP)
+                    .doubleValue();
+        }
+    }
+    public static String getTableForFile(){
+        StringBuilder data= new StringBuilder();
+        int cont=0;
+        for(char x:table.keySet()){
+            if(cont<table.size()-1)
+                data.append(x).append(",").append(BigDecimal.valueOf(table.get(x).upper-table.get(x).low)/**set precision*/
+                        .setScale(3, RoundingMode.HALF_UP)
+                        .doubleValue()).append("\n");
+            else data.append(x).append(",").append(BigDecimal.valueOf(table.get(x).upper-table.get(x).low)/**set precision*/
+                    .setScale(3, RoundingMode.HALF_UP)
+                    .doubleValue());
+            cont++;
+        }
+        return data.toString();
+    }
     public static String getRangeForGui(){
         String range=range1+" , "+range2;
         return range;
@@ -45,6 +62,7 @@ public class ArithmeticCoding {
             range=higher-lower;
             higher= lower+ (range) * table.get(seq.charAt(i)).upper;
             lower= lower+ (range) * table.get(seq.charAt(i)).low;
+
         }
         //System.out.println("the range is: "+lower+" "+higher);
         //System.out.println("value: "+(lower+higher)/(double)2);
@@ -52,8 +70,7 @@ public class ArithmeticCoding {
         range1=lower;
         range2=higher;
     }
-    public static String deCompress(double value,int numChars,Map<Character,LowUpperBoundry>tablee) {
-        table=tablee;
+    public static String deCompress(double value,int numChars) {
         char currChar;
         String deCompressedseq="";
         currChar=getCurrChar(value);
@@ -112,5 +129,7 @@ public class ArithmeticCoding {
                     .doubleValue();
             arrSeq.remove(i--);
         }
+
     }
+
 }
